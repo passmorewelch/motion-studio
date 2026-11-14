@@ -4,7 +4,8 @@ Motion graphics written as code.
 
 ```
 videos/<name>.html   one file per video
-brand.css            shared colors and fonts
+brand.css            shared colors and fonts (CSS variables)
+fonts/               Poppins + Montserrat, loaded locally by brand.css (SIL OFL)
 render.mjs           renders a video to out/<name>.mp4
 out/                 rendered MP4s (stills are not committed)
 ```
@@ -21,7 +22,7 @@ window.render = (t) => { ... };   // draw the exact frame at time t (seconds)
 `render(t)` must depend only on `t`: no CSS animations or transitions, no timers,
 no `Date.now()`, no unseeded `Math.random()`. That way every render is identical.
 Link brand styles with `<link rel="stylesheet" href="../brand.css">` and use
-`var(--accent)`, `var(--font-display)` and so on.
+`var(--accent)`, `var(--font-headline)` and so on.
 
 ## Render
 ```bash
