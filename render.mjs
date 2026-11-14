@@ -14,7 +14,7 @@
 
 import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -49,7 +49,10 @@ try {
   await page.waitForFunction(() => typeof window.render === 'function', null, { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
 
-  const { duration, size } = await page.evaluate(() => ({ duration: window.DURATION, size: window.SIZE }));
+  const { duration, size, audio } = await page.evaluate(() => ({ duration: window.DURATION, size: window.SIZE, audio: window.AUDIO }));
+  // Optional soundtrack: window.AUDIO is a path relative to the video's HTML file.
+  const audioPath = audio ? path.resolve(path.dirname(abs), audio) : null;
+  if (audioPath && !existsSync(audioPath)) throw new Error(`window.AUDIO file not found: ${audioPath}`);
   if (!(duration > 0)) throw new Error('window.DURATION must be a positive number of seconds');
   if (!Array.isArray(size) || size.length !== 2) throw new Error('window.SIZE must be [width, height]');
   const [width, height] = size;
@@ -75,6 +78,7 @@ try {
     const ff = spawn('ffmpeg', [
       '-y', '-loglevel', 'error',
       '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
+      ...(audioPath ? ['-i', audioPath, '-map', '0:v', '-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-t', String(duration)] : []),
       '-c:v', 'libx264', '-preset', 'medium', '-crf', '18',
       '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
       out,

@@ -9,6 +9,7 @@ fonts/               Poppins + Montserrat, loaded locally by brand.css (SIL OFL)
 render.mjs           renders a video to out/<name>.mp4
 assets/              logos and images used by videos
 templates/           reusable video briefs with [brackets] to fill in
+audio/               soundtracks generated in code (<name>.mjs -> <name>.wav)
 out/                 rendered MP4s (stills are not committed)
 ```
 
@@ -20,6 +21,8 @@ window.DURATION = 3;              // seconds
 window.SIZE = [1920, 1080];       // [width, height]
 window.render = (t) => { ... };   // draw the exact frame at time t (seconds)
 ```
+
+Optionally set `window.AUDIO = "../audio/<name>.wav"` to add a soundtrack.
 
 `render(t)` must depend only on `t`: no CSS animations or transitions, no timers,
 no `Date.now()`, no unseeded `Math.random()`. That way every render is identical.

@@ -15,3 +15,6 @@
 - Reusable briefs live in `templates/` with [brackets] for the parts that change. When the user approves a
   video made from a brief that says "NEVER TWICE", save that brief there.
 - Logos and images go in `assets/`.
+- Sound: a video can set `window.AUDIO = "../audio/<name>.wav"` and render.mjs muxes it in (AAC).
+  Soundtracks are synthesized in code (`audio/<name>.mjs` → `audio/<name>.wav`) with each sound effect
+  timed to a moment in the video's render(t) timeline. Regenerate the WAV whenever the video's timing changes.
