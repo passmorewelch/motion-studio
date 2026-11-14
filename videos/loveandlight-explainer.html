@@ -138,7 +138,7 @@
   const dots = $$('.dot');
   const titleLines = $$('#title .line');
   const LOGO_RATIO = 554 / 832;
-  const STEP_START = [3.8, 6.4, 9.0], STEP_LEN = 2.8;
+  const STEP_START = [4.0, 6.55, 9.1], STEP_LEN = 2.65;
 
   window.render = (t) => {
     // ---- background ----
@@ -189,13 +189,13 @@
     // ---- scenes 2-4: steps ----
     steps.forEach((s, i) => {
       const a = STEP_START[i], b = a + STEP_LEN;
-      const out = inCubic(prog(t, b - 0.45, 0.45));
+      const out = inOutCubic(prog(t, b - 0.55, 0.45));   // fully gone 0.1s before the next step starts
       const drift = -90 * out;
-      const pn = prog(t, a, 0.8);
+      const pn = prog(t, a + 0.1, 0.8);
       s.el.style.visibility = t > a - 0.05 && t < b + 0.05 ? 'visible' : 'hidden';
 
       s.num.style.opacity = clamp(pn * 2.5) * (1 - out);
-      s.num.style.transform = `translateX(${drift}px) scale(${0.7 + 0.3 * outBack(pn)})`;
+      s.num.style.transform = `translateX(${drift + (1 - outCubic(pn)) * 80}px) scale(${0.7 + 0.3 * outBack(pn)})`;
       s.num.style.filter = `blur(${(1 - outCubic(pn)) * 10 + out * 8}px)`;
       s.num.style.backgroundPosition = `${lerp(100, 0, prog(t, a + 0.4, 1.6))}% 0`;   // metallic sweep
       s.glow.style.opacity = outCubic(pn) * (1 - out) * (0.7 + 0.3 * Math.sin(t * 2));
@@ -215,7 +215,7 @@
       s.body.style.filter = `blur(${out * 8}px)`;
     });
 
-    $('#dots').style.opacity = window01(t, 3.8, 0.5, 11.3, 0.5);
+    $('#dots').style.opacity = window01(t, 4.0, 0.5, 11.3, 0.45);
     dots.forEach((d, i) => {
       const on = prog(t, STEP_START[i] + 0.1, 0.4);
       d.style.background = `color-mix(in srgb, var(--gold) ${Math.round(on * 100)}%, transparent)`;

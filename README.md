@@ -7,6 +7,8 @@ videos/<name>.html   one file per video
 brand.css            shared colors and fonts (CSS variables)
 fonts/               Poppins + Montserrat, loaded locally by brand.css (SIL OFL)
 render.mjs           renders a video to out/<name>.mp4
+assets/              logos and images used by videos
+templates/           reusable video briefs with [brackets] to fill in
 out/                 rendered MP4s (stills are not committed)
 ```
 

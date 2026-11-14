@@ -12,3 +12,6 @@
   user can download it from GitHub. Still PNGs are gitignored.
 - In a fresh cloud container ffmpeg may be missing: `apt-get update && apt-get install -y ffmpeg`.
   Playwright + Chromium are preinstalled globally; render.mjs loads it via createRequire. Don't reinstall it.
+- Reusable briefs live in `templates/` with [brackets] for the parts that change. When the user approves a
+  video made from a brief that says "NEVER TWICE", save that brief there.
+- Logos and images go in `assets/`.
