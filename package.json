@@ -2,9 +2,9 @@
   "name": "motion-studio",
   "version": "1.0.0",
   "private": true,
-  "description": "Motion graphics written as code: HTML/CSS/JS scenes rendered frame-by-frame with headless Chromium + ffmpeg.",
+  "type": "module",
+  "description": "Motion graphics written as code: one HTML file per video, rendered frame-by-frame with Playwright + ffmpeg.",
   "scripts": {
-    "render": "node render.js",
-    "still": "node render.js --still"
+    "render": "node render.mjs"
   }
 }

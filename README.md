@@ -1,38 +1,33 @@
 # motion-studio
 
-Motion graphics written as code. Each video is an HTML/CSS/JS **scene**; the renderer
-opens it in headless Chromium (Playwright), steps time frame by frame, screenshots each
-frame and pipes them into ffmpeg to produce an H.264 MP4 in `out/`.
+Motion graphics written as code.
 
-## Requirements
-- Node 18+
-- Playwright with Chromium (`require('playwright')` must resolve)
-- ffmpeg (`apt-get install -y ffmpeg`)
+```
+videos/<name>.html   one file per video
+brand.css            shared colors and fonts
+render.mjs           renders a video to out/<name>.mp4
+out/                 rendered MP4s (stills are not committed)
+```
+
+## A video file
+Each HTML file in `videos/` sets three things:
+
+```js
+window.DURATION = 3;              // seconds
+window.SIZE = [1920, 1080];       // [width, height]
+window.render = (t) => { ... };   // draw the exact frame at time t (seconds)
+```
+
+`render(t)` must depend only on `t`: no CSS animations or transitions, no timers,
+no `Date.now()`, no unseeded `Math.random()`. That way every render is identical.
+Link brand styles with `<link rel="stylesheet" href="../brand.css">` and use
+`var(--accent)`, `var(--font-display)` and so on.
 
 ## Render
 ```bash
-node render.js scenes/hello.html                 # -> out/hello.mp4
-node render.js scenes/hello.html --still 2.5     # -> out/hello-still.png (single frame)
-node render.js scenes/hello.html --fps 60 --duration 8 --audio music.mp3 --out out/x.mp4
-```
-Other flags: `--width`, `--height`, `--crf` (quality, default 18), `--frames 0-90`.
-
-## Writing a scene
-Copy `scenes/hello.html`. A scene loads `lib/motion.js` and calls:
-
-```js
-M.scene({ duration: 6, fps: 30, width: 1920, height: 1080 }, (t) => {
-  // set every element's style as a pure function of t (seconds)
-});
+node render.mjs videos/hello.html               # -> out/hello.mp4 (30 fps, H.264)
+node render.mjs videos/hello.html --stills 3    # -> out/hello-still-1..3.png, evenly spaced
 ```
 
-Never use CSS transitions/animations, `setTimeout`, or `Date.now()` — the renderer
-controls time, so everything must be derived from `t`.
-
-Helpers on `M`: `ease.*` (quad/cubic/quart/expo/back/elastic/bounce), `prog`, `tween`,
-`keyframes`, `spring`, `lerp`, `clamp`, `rng(seed)` (deterministic random), `splitChars(el)`.
-
-Open a scene in a normal browser with `?preview` to loop it live, or `?t=2.5` to
-freeze at a time.
-
-Fonts installed locally and safe to use: Inter, Inter Display, JetBrains Mono, DejaVu, Free*.
+## Requirements
+Node 18+, Playwright with Chromium, and ffmpeg (`apt-get install -y ffmpeg`).

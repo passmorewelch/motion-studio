@@ -1,0 +1,27 @@
+/* Brand: colors and fonts shared by every video.
+   Link it from a video with: <link rel="stylesheet" href="../brand.css">
+   Change the values here and every video picks them up on its next render. */
+
+:root {
+  /* Colors */
+  --bg:      #0b0d12;  /* background */
+  --surface: #161a22;  /* cards, panels */
+  --text:    #f4f1ea;  /* main text */
+  --muted:   #8a8f9c;  /* secondary text */
+  --accent:  #ff8a5b;  /* primary accent */
+  --accent-2:#6ad1ff;  /* secondary accent */
+  --accent-3:#c7a6ff;  /* tertiary accent */
+
+  /* Fonts (installed locally, so renders never wait on the network) */
+  --font-display: 'Inter Display', 'Inter', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+html, body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}

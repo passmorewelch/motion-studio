@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../brand.css">
+<style>
+  body { width: 1920px; height: 1080px; position: relative; }
+  #glow { position: absolute; left: 50%; top: 50%; width: 1100px; height: 1100px; border-radius: 50%;
+          background: radial-gradient(circle, color-mix(in srgb, var(--accent) 28%, transparent), transparent 65%);
+          transform: translate(-50%, -50%); }
+  #line { position: absolute; left: 0; right: 0; top: 460px; text-align: center;
+          font-family: var(--font-display); font-weight: 800; font-size: 132px; letter-spacing: -4px; }
+  .word { display: inline-block; margin: 0 22px; }
+  .word:last-child { color: var(--accent); }
+  #rule { position: absolute; left: 50%; top: 650px; height: 4px; background: var(--accent-2); transform: translateX(-50%); }
+</style>
+</head>
+<body>
+  <div id="glow"></div>
+  <div id="line"><span class="word">Hello</span><span class="word">from</span><span class="word">my</span><span class="word">studio</span></div>
+  <div id="rule"></div>
+<script>
+  window.DURATION = 3;
+  window.SIZE = [1920, 1080];
+
+  // helpers
+  const clamp = (x) => Math.min(1, Math.max(0, x));
+  const prog = (t, start, dur) => clamp((t - start) / dur);           // 0..1 through a window
+  const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+  const outBack = (x) => 1 + 2.70158 * Math.pow(x - 1, 3) + 1.70158 * Math.pow(x - 1, 2);
+  const inCubic = (x) => x * x * x;
+
+  const words = [...document.querySelectorAll('.word')];
+  const rule = document.getElementById('rule');
+  const glow = document.getElementById('glow');
+
+  window.render = (t) => {
+    const exit = inCubic(prog(t, 2.55, 0.45));                         // everything fades in the last 0.45s
+
+    glow.style.opacity = outCubic(prog(t, 0, 1.2)) * (1 - exit);
+    glow.style.transform = `translate(-50%, -50%) scale(${0.6 + 0.4 * outCubic(prog(t, 0, 2.5))})`;
+
+    words.forEach((w, i) => {
+      const p = prog(t, 0.15 + i * 0.14, 0.6);
+      w.style.opacity = clamp(p * 2) * (1 - exit);
+      w.style.transform = `translateY(${(1 - outBack(p)) * 90 - exit * 40}px)`;
+    });
+
+    rule.style.width = 640 * outCubic(prog(t, 0.9, 0.7)) * (1 - exit) + 'px';
+  };
+
+  window.render(0);  // so the page looks right when opened directly in a browser
+</script>
+</body>
+</html>

@@ -1,9 +1,12 @@
 # Motion Studio — working notes for Claude
 
-- Scenes live in `scenes/*.html`, use `lib/motion.js`, and must be deterministic functions of `t`.
-- Render with `node render.js scenes/<name>.html` → `out/<name>.mp4`.
-- Before a full render, check key moments with `--still <seconds>` (write stills to the scratchpad) and look at them.
-- **Every time a video is rendered: commit the MP4 in `out/` and push it** (with the scene source),
-  so the user can download it from GitHub. Stills/PNGs are not committed (see .gitignore).
-- In a fresh cloud container, ffmpeg may be missing: `apt-get update && apt-get install -y ffmpeg`.
-  Playwright + Chromium are preinstalled globally; don't reinstall them.
+- One video = one HTML file in `videos/` that sets `window.DURATION`, `window.SIZE = [w, h]`
+  and `window.render(t)`. render(t) must be a pure function of t: no CSS animations/transitions,
+  timers, Date.now() or unseeded randomness.
+- Colors and fonts come from `brand.css` (CSS variables). Use them rather than hard-coding values.
+- Check with `node render.mjs videos/<name>.html --stills 3` and look at the PNGs before a full render.
+- Full render: `node render.mjs videos/<name>.html` → `out/<name>.mp4` at 30 fps.
+- **Every time a video is rendered: commit the MP4 in `out/` (with its HTML) and push it**, so the
+  user can download it from GitHub. Still PNGs are gitignored.
+- In a fresh cloud container ffmpeg may be missing: `apt-get update && apt-get install -y ffmpeg`.
+  Playwright + Chromium are preinstalled globally; render.mjs loads it via createRequire. Don't reinstall it.
